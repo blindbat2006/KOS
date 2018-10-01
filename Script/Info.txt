@@ -1,0 +1,153 @@
+Kerbin Geosat 2863333.52m
+
+//Transfers
+set target to "".
+HMTransfer().
+
+//APO/PERI nodes
+
+set myalt to 400000.
+if eta:periapsis < eta:apoapsis
+{
+	node_apo(myalt).
+	run_node().
+}else
+{
+	node_peri(myalt).
+	run_node().
+}
+
+node_apo(myalt).
+run_node().
+node_peri(myalt).
+run_node().
+
+//Inclination Changes
+node_inc(0).
+run_node().
+
+//Landings
+until stage:number = 1
+{
+	stage.
+	wait 3.
+}
+powerland().
+dumbland().
+spaceX().
+landvac("COOR",0,0).
+
+
+//Returns to main body
+hm_return(100000).
+run_node().
+FNwarp(eta:transition+1).
+
+//Wait until SOI change
+set whoiam to ship:body.
+wait until not (ship:body = whoiam).
+
+//Not Working
+circ_alt(15000).
+
+//Transfer to Mun and orbit
+set myalt to 25000.
+set target to "Mun".
+HMTransfer().
+node_apo(myalt).
+run_node().
+node_apo(myalt).
+run_node().
+node_inc(0).
+run_node().
+
+//Transfer to the mun and land
+set myalt to 25000.
+set ag9 to false.
+set target to "Mun".
+HMTransfer().
+node_apo(myalt).
+run_node().
+node_apo(myalt).
+run_node().
+node_inc(0).
+run_node().
+wait until ag9.
+set ship:name to "Apollo2".
+powerland().
+
+//Space Station 
+//Approach
+set target to vessel("ISS").
+approach(0).
+
+//Within 150m 
+//dock("tag name").
+//dock("ISS"). //Main port at front
+//dock("ISS_TUG"). // Tug position
+//dock("ISS_FUEL"). //Fuel Transfers
+//dock("ISS_Supplies"). //LS Tranfers
+
+//dock("ISS_LF").
+//dock("ISS_Ox").
+//dock("ISS_MONO").
+//dock("ISS_CarbonExt").
+//dock("ISS_Purifier").
+//dock("ISS_Sabatier").
+//dock("ISS_FOOD").
+//dock("ISS_O2").
+//dock("ISS_H2O").
+//dock().
+
+SET SHIP:CONTROL:NEUTRALIZE to TRUE.
+
+//ISS Dragon
+set myalt to 400000.
+if eta:periapsis < eta:apoapsis
+{
+	node_apo(myalt).
+	run_node().
+}else
+{
+	node_peri(myalt).
+	run_node().
+}
+set target to vessel("ISS").
+approach(0).
+clearscreen.
+print "Get within 100m of target then docking will begin". 
+wait until target:distance < 100.
+dock("ISS_DOCK"). //Main port at front
+SET SHIP:CONTROL:NEUTRALIZE to TRUE.
+iss_returner().
+paraland().
+
+// Transfer to Minmus and return to ISS
+set ag9 to false.
+set myalt to 25000.
+set target to "Minmus".
+HMTransfer().
+node_apo(myalt).
+run_node().
+node_apo(myalt).
+run_node().
+node_inc(0).
+run_node().
+clearscreen.
+print "Press 9 to return to ISS".
+wait until ag9.
+clearscreen.
+wait 1.
+hm_return(400000).
+run_node().
+set whoiam to ship:body.
+FNwarp(eta:transition-10).
+wait until not (ship:body = whoiam).
+node_apo(300000).
+run_node().
+clearscreen.
+set target to vessel("ISS").
+approach(0).
+print "Get within 100m of target then docking will begin". 
+wait until target:distance < 100.
+dock("ISS_DOCK"). //Main port at front
